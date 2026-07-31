@@ -122,8 +122,22 @@
           <td><strong>なし</strong></td>
           <td>なし</td>
         </tr>
+        <tr>
+          <td><a href="notfound.html">notfound.html</a></td>
+          <td>OG-TITLE-404</td>
+          <td>橙</td>
+          <td>あり</td>
+          <td>あり</td>
+          <td>あり</td>
+        </tr>
       </tbody>
     </table>
+    <p>
+      最後の行は実体のないパスです。
+      GitHub Pages がリポジトリ直下の <code>404.html</code> を <strong>HTTP 404</strong> として返すため、
+      「ステータスは 404 だが og タグは完備している」ページになります。
+      クローラが 404 のレスポンスボディから OGP を読むかどうかを切り分けるために使います。
+    </p>
 
     <h2>投稿本文（コピー用）</h2>
     <p>
@@ -148,5 +162,11 @@
     <code class="post-text">B-3 https://yuki383.github.io/ogp-tests/title-only.html</code>
     <p><strong>B-4</strong>: 何もなし</p>
     <code class="post-text">B-4 https://yuki383.github.io/ogp-tests/empty.html</code>
+
+    <h3>C. 取得そのものが失敗する URL</h3>
+    <p><strong>C-1</strong>: 名前解決できないホスト（ページが存在しない）</p>
+    <code class="post-text">C-1 https://no-such-host.example.com/</code>
+    <p><strong>C-2</strong>: HTTP 404 を返すが og タグは完備している</p>
+    <code class="post-text">C-2 https://yuki383.github.io/ogp-tests/notfound.html</code>
   </body>
 </html>
