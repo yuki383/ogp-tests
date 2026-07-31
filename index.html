@@ -168,5 +168,22 @@
     <code class="post-text">C-1 https://no-such-host.example.com/</code>
     <p><strong>C-2</strong>: HTTP 404 を返すが og タグは完備している</p>
     <code class="post-text">C-2 https://yuki383.github.io/ogp-tests/notfound.html</code>
+
+    <h3>同じケースを複数の SNS で試すとき</h3>
+    <p>
+      クローラは URL 単位で結果をキャッシュし、Meta のように複数の SNS でキャッシュを共有するものもあります。
+      同じ URL を使い回すと、2 つめ以降の SNS が 1 つめのキャッシュを見てしまい判定が濁ります。
+      C-1 と C-2 は SNS ごとに URL を変えられるので、そうしてください。
+    </p>
+    <ul>
+      <li>
+        C-1: <code>example.com</code> のサブドメインはすべて名前解決できないため、
+        <code>no-such-host-x.example.com</code> のように好きな名前を付けられます
+      </li>
+      <li>
+        C-2: 実体のないパスはすべて <code>404.html</code> が HTTP 404 で返るため、
+        <code>notfound-x.html</code> のように好きなパスを付けられます
+      </li>
+    </ul>
   </body>
 </html>
