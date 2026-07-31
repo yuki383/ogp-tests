@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OGP テスト用ページ</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+        line-height: 1.7;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 24px 16px 80px;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 32px;
+      }
+      th,
+      td {
+        border: 1px solid #8888;
+        padding: 6px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: #8881;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.9em;
+      }
+      .post-text {
+        white-space: pre-wrap;
+        display: block;
+        background: #8881;
+        border: 1px solid #8884;
+        border-radius: 6px;
+        padding: 8px 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>OGP テスト用ページ</h1>
+    <p>
+      SNS のリンクプレビュー（OGP カード）の挙動を実機で確認するためのページ群です。
+      meta タグの組み合わせだけが異なるページを URL 単位で分けています。
+      SNS のクローラは URL 単位でキャッシュするため、同じ URL の meta を書き換えて使い回すと結果が汚れます。
+    </p>
+
+    <h2>ページ一覧</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>ページ</th>
+          <th>og:title</th>
+          <th>og:image</th>
+          <th>og:description</th>
+          <th>HTML title</th>
+          <th>favicon</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="a.html">a.html</a></td>
+          <td>OG-TITLE-A</td>
+          <td>赤</td>
+          <td>あり</td>
+          <td>あり</td>
+          <td>あり</td>
+        </tr>
+        <tr>
+          <td><a href="b.html">b.html</a></td>
+          <td>OG-TITLE-B</td>
+          <td>青</td>
+          <td>あり</td>
+          <td>あり</td>
+          <td>あり</td>
+        </tr>
+        <tr>
+          <td><a href="c.html">c.html</a></td>
+          <td>OG-TITLE-C</td>
+          <td>緑</td>
+          <td>あり</td>
+          <td>あり</td>
+          <td>あり</td>
+        </tr>
+        <tr>
+          <td><a href="no-image.html">no-image.html</a></td>
+          <td>あり</td>
+          <td><strong>なし</strong></td>
+          <td>あり</td>
+          <td>あり</td>
+          <td>なし</td>
+        </tr>
+        <tr>
+          <td><a href="no-ogtitle.html">no-ogtitle.html</a></td>
+          <td><strong>なし</strong></td>
+          <td>紫</td>
+          <td>あり</td>
+          <td>あり</td>
+          <td>あり</td>
+        </tr>
+        <tr>
+          <td><a href="title-only.html">title-only.html</a></td>
+          <td><strong>なし</strong></td>
+          <td><strong>なし</strong></td>
+          <td><strong>なし</strong></td>
+          <td>あり</td>
+          <td>なし</td>
+        </tr>
+        <tr>
+          <td><a href="empty.html">empty.html</a></td>
+          <td><strong>なし</strong></td>
+          <td><strong>なし</strong></td>
+          <td><strong>なし</strong></td>
+          <td><strong>なし</strong></td>
+          <td>なし</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>投稿本文（コピー用）</h2>
+    <p>
+      SNS の投稿欄に貼り付けて、実際に表示されるカードを確認します。
+      カードの判定に画像・動画の添付が影響する SNS があるため、テキストのみで投稿してください。
+    </p>
+
+    <h3>A. カード対象 URL の選択</h3>
+    <p><strong>A-1</strong>: カード化できる URL が 2 つ（先頭か末尾か）</p>
+    <code class="post-text">A-1 https://yuki383.github.io/ogp-tests/a.html https://yuki383.github.io/ogp-tests/b.html</code>
+    <p><strong>A-2</strong>: 先頭がカード化できない（フォールバックするか）</p>
+    <code class="post-text">A-2 https://yuki383.github.io/ogp-tests/empty.html https://yuki383.github.io/ogp-tests/a.html</code>
+    <p><strong>A-3</strong>: URL が 3 つ（A-1 が先頭だった場合のみ）</p>
+    <code class="post-text">A-3 https://yuki383.github.io/ogp-tests/a.html https://yuki383.github.io/ogp-tests/b.html https://yuki383.github.io/ogp-tests/c.html</code>
+
+    <h3>B. タイトルと画像のフォールバック</h3>
+    <p><strong>B-1</strong>: og:title なし / og:image あり</p>
+    <code class="post-text">B-1 https://yuki383.github.io/ogp-tests/no-ogtitle.html</code>
+    <p><strong>B-2</strong>: og:title あり / og:image なし</p>
+    <code class="post-text">B-2 https://yuki383.github.io/ogp-tests/no-image.html</code>
+    <p><strong>B-3</strong>: HTML title のみ</p>
+    <code class="post-text">B-3 https://yuki383.github.io/ogp-tests/title-only.html</code>
+    <p><strong>B-4</strong>: 何もなし</p>
+    <code class="post-text">B-4 https://yuki383.github.io/ogp-tests/empty.html</code>
+  </body>
+</html>
