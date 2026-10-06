@@ -23,3 +23,17 @@ GitHub Pages がリポジトリ直下の `404.html` を HTTP 404 として返す
 クローラが 404 のレスポンスボディから OGP を読むかどうかを切り分けるために使います。
 
 投稿本文のコピー用テキストは https://yuki383.github.io/ogp-tests/ にまとめています。
+
+## 未キャッシュのリンク（fresh/）
+
+Facebook の「初回シェアでは画像が非同期処理され、表示されないことがある」挙動を再現するための使い捨てページです。
+固定のページはどこかの SNS で一度シェアした時点でキャッシュされるため、この用途には使えません。
+
+```sh
+./scripts/new-fresh.py
+```
+
+`fresh/<ID>.html` と、その回専用の約 6MB のノイズ画像 `fresh/<ID>.png` を生成します。
+`og:image:width` / `og:image:height` と `og:url` はあえて付けていません。
+commit・push して GitHub Pages に反映されてから（1 分程度）使ってください。
+1 つのページは 1 回の投稿にだけ使います。
