@@ -6,8 +6,12 @@
 - og:image:width / og:image:height は付けない（付けると即時レンダリングされ再現しない）
 - og:url は付けない（canonical キーで既存キャッシュに寄せられないように）
 - 画像はノイズで圧縮を効かせず、Facebook の上限 8MB を下回る約 6MB にする
+
+--draft は og:image のない「公開前」版を作る。先にこれを Meta に取得させてから
+--id で同じ ID の本番版に差し替え、「公開前に取得されたキャッシュが残る」状況を再現する。
 """
 
+import argparse
 import os
 import secrets
 import struct
@@ -47,15 +51,17 @@ def noise_png(width: int, height: int) -> bytes:
     )
 
 
-def page_html(page_id: str, image_url: str) -> str:
+def page_html(page_id: str, image_url: str | None) -> str:
+    image_meta = (
+        f'\n    <meta property="og:image" content="{image_url}" />' if image_url else ""
+    )
     return f"""<!DOCTYPE html>
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
     <title>HTML-TITLE-FRESH-{page_id}</title>
     <meta property="og:title" content="OG-TITLE-FRESH-{page_id}" />
-    <meta property="og:description" content="OG-DESCRIPTION-FRESH-{page_id}" />
-    <meta property="og:image" content="{image_url}" />
+    <meta property="og:description" content="OG-DESCRIPTION-FRESH-{page_id}" />{image_meta}
     <meta property="og:type" content="website" />
   </head>
   <body>
@@ -66,19 +72,29 @@ def page_html(page_id: str, image_url: str) -> str:
 
 
 def main() -> int:
-    page_id = datetime.now().strftime("%Y%m%d-%H%M%S") + "-" + secrets.token_hex(3)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--draft", action="store_true", help="og:image のない公開前版を作る")
+    parser.add_argument("--id", help="既存の ID を本番版で上書きする")
+    args = parser.parse_args()
+
+    page_id = args.id or (
+        datetime.now().strftime("%Y%m%d-%H%M%S") + "-" + secrets.token_hex(3)
+    )
     FRESH_DIR.mkdir(exist_ok=True)
+    html_path = FRESH_DIR / f"{page_id}.html"
+    print(f"page : {BASE_URL}/fresh/{page_id}.html")
+
+    if args.draft:
+        html_path.write_text(page_html(page_id, None), encoding="utf-8")
+        print("image: なし（公開前版）")
+        return 0
 
     image_path = FRESH_DIR / f"{page_id}.png"
-    html_path = FRESH_DIR / f"{page_id}.html"
     image_url = f"{BASE_URL}/fresh/{page_id}.png"
-
     image_path.write_bytes(noise_png(WIDTH, HEIGHT))
     html_path.write_text(page_html(page_id, image_url), encoding="utf-8")
-
     size_mb = image_path.stat().st_size / 1024 / 1024
-    print(f"page : {BASE_URL}/fresh/{page_id}.html", file=sys.stdout)
-    print(f"image: {image_url} ({size_mb:.1f} MB)", file=sys.stdout)
+    print(f"image: {image_url} ({size_mb:.1f} MB)")
     return 0
 
 
